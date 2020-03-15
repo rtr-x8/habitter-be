@@ -15,5 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/oauth/twitter/redirect', 'SocialiteController@redirectToTwitter');
+Route::get('/oauth/twitter/callback', 'SocialiteController@handleTwitterCallback');
 
 Route::get('/oauth/github/redirect', 'SocialiteController@redirectToGithub');

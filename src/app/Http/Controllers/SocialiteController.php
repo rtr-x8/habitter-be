@@ -33,14 +33,16 @@ class SocialiteController extends Controller
     public function handleTwitterCallback(): JsonResponse
     {
         $user = Socialite::driver('twitter')->user();
-
-        // $user->token;
+        $user->getId();
+        $user->getNickname();
+        $user->getName();
+        $user->getEmail();
+        $user->getAvatar();
     }
 
     public function redirectToGithub(): JsonResponse
     {
         $redirectResponse = Socialite::driver('github')->redirect();
-        dd($redirectResponse);
         return response()->json([
             'redirect_url' => $redirectResponse->getTargetUrl()
         ]);

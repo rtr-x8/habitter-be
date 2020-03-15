@@ -37,4 +37,12 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * SNSアカウント
+     */
+    public function comments()
+    {
+        return $this->hasMany('App\UserSocialAccount');
+    }
 }
