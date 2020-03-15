@@ -19,9 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        env('WEB_URL', 'https://my-nuxt-app.com')
-    ],
+    'allowed_origins' => [env('ALLOWED_ORIGIN_URL', 'https://my-nuxt-app.com')],
 
     'allowed_origins_patterns' => [],
 
@@ -31,6 +29,6 @@ return [
 
     'max_age' => false,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];

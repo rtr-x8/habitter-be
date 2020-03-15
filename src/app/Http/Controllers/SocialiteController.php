@@ -1,44 +1,39 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Support\Socialite\SocialiteHandler;
 use Illuminate\Http\JsonResponse;
+use Socialite;
 
 class SocialiteController extends Controller
 {
-    /**
-     * @var SocialiteHandler
-     */
-    protected $socialiteHandler;
-
-    /**
-     * @param  SocialiteHandler  $socialiteHandler
-     * @return void
-     */
-    public function __construct(SocialiteHandler $socialiteHandler)
+    public function __construct()
     {
         $this->middleware('session');
-
-        $this->socialiteHandler = $socialiteHandler;
     }
 
     /**
+     * Redirect the user to the Twitter authentication page.
+     *
      * @return JsonResponse
      */
-    public function getRedirectToTwitterUrl(): JsonResponse
+    public function redirectToTwitter(): JsonResponse
     {
         return response()->json([
-            'redirect_url' => $this->socialiteHandler->getRedirectToTwitterUrl(),
+            'redirect_url' => Socialite::driver('twitter')->redirect()->getTargetUrl()
         ]);
     }
 
     /**
+     * Obtain the user information from Twitter.
+     *
      * @return JsonResponse
      */
     public function handleTwitterCallback(): JsonResponse
     {
-        return $this->socialiteHandler->handleTwitterCallback();
+        $user = Socialite::driver('twitter')->user();
+
+        // $user->token;
     }
 }

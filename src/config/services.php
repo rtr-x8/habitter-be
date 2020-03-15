@@ -33,7 +33,8 @@ return [
     'twitter' => [
         'client_id' => env('TWITTER_CLIENT_ID'),
         'client_secret' => env('TWITTER_CLIENT_SECRET'),
-        'redirect' => 'TWITTER_REDIRECT_URI',
+        'redirect' => env('TWITTER_REDIRECT_URI'),
+        'callback' => env('TWITTER_CALLBACK_URI'),
     ],
 
 ];
