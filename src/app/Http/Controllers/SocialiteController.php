@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Socialite;
+use App\User;
+use App\UserSocialAccount as SocialAccount;
+use Illuminate\Http\Request;
 
 class SocialiteController extends Controller
 {
@@ -30,14 +33,36 @@ class SocialiteController extends Controller
      *
      * @return JsonResponse
      */
-    public function handleTwitterCallback(): JsonResponse
+    public function handleTwitterCallback(Request $request): JsonResponse
     {
-        $user = Socialite::driver('twitter')->user();
-        $user->getId();
-        $user->getNickname();
-        $user->getName();
-        $user->getEmail();
-        $user->getAvatar();
+        $twitterUser = Socialite::with('twitter')->user();
+        return response()->json([
+            '$twitterUser' => $twitterUser,
+        ]);
+
+        $socialAccount = SocialAccount::firstOrNew([
+            'provider' => 'twitter',
+            'account_id' => $twitterUser->getId(),
+        ]);
+
+        if ($socialAccount->exists) {
+            $user = User::find($socialAccount->getAttribute('user_id'));
+        } else {
+            $user = User::create([
+                'name' => $twitterUser->getName(),
+                'email' => $twitterUser->getEmail(),
+                'password' => null,
+                'twitter_id' => $twitterUser->getNickName(),
+            ]);
+
+            $socialAccount->setAttribute('user_id', $createdUser->id);
+            $socialAccount->save();
+        }
+
+        return response()->json([
+            'user' => $user,
+            'access_token' => $user->createToken(null, ['*'])->accessToken,
+        ]);;
     }
 
     public function redirectToGithub(): JsonResponse
