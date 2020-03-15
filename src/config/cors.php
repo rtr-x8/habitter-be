@@ -19,7 +19,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        env('WEB_URL', 'https://my-nuxt-app.com')
+    ],
 
     'allowed_origins_patterns' => [],
 
