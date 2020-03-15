@@ -36,4 +36,13 @@ class SocialiteController extends Controller
 
         // $user->token;
     }
+
+    public function redirectToGithub(): JsonResponse
+    {
+        $redirectResponse = Socialite::driver('github')->redirect();
+        dd($redirectResponse);
+        return response()->json([
+            'redirect_url' => $redirectResponse->getTargetUrl()
+        ]);
+    }
 }
