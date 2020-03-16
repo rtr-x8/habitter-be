@@ -35,10 +35,19 @@ class SocialiteController extends Controller
      */
     public function handleTwitterCallback(Request $request): JsonResponse
     {
-        $twitterUser = Socialite::with('twitter')->user();
-        return response()->json([
-            '$twitterUser' => $twitterUser,
-        ]);
+        try {
+            // $twitterUser = Socialite::with('twitter')->user();
+            $twitterUser = Socialite::with('twitter')
+                ->userFromTokenAndSecret(
+                    config('services.twitter.access_token'),
+                    config('services.twitter.access_token_secret')
+                );
+        }
+        catch (\Exception $e) {
+            return response()->json([
+                '$twitterUser' => 'error',
+            ]);
+        }
 
         $socialAccount = SocialAccount::firstOrNew([
             'provider' => 'twitter',
@@ -53,15 +62,17 @@ class SocialiteController extends Controller
                 'email' => $twitterUser->getEmail(),
                 'password' => null,
                 'twitter_id' => $twitterUser->getNickName(),
+                'email_verified_at' => 1
             ]);
 
-            $socialAccount->setAttribute('user_id', $createdUser->id);
-            $socialAccount->save();
+            // メアドが重複したときの設定必要
+            $user->save();
+            $user->socialAccounts()->save($socialAccount);
         }
 
         return response()->json([
             'user' => $user,
-            'access_token' => $user->createToken(null, ['*'])->accessToken,
+            'access_token' => $user->createToken('access_token', ['*'])->accessToken,
         ]);;
     }
 

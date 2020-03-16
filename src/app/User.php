@@ -41,7 +41,7 @@ class User extends Authenticatable
     /**
      * SNSアカウント
      */
-    public function comments()
+    public function socialAccounts()
     {
         return $this->hasMany('App\UserSocialAccount');
     }
