@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Habit;
+use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class HabitController extends Controller
 {
@@ -33,9 +35,17 @@ class HabitController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        //
+        $habit = new Habit;
+        $habit->title = $request->title;
+        $habit->user_id = $request->user()->id;
+        $habit->published = $request->publish;
+        $habit->archived = false;
+        $habit->save();
+        return response()->json([
+            'habit' => $habit,
+        ]);
     }
 
     /**
